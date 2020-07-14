@@ -331,9 +331,10 @@ class MWSConnection(AWSQueryConnection):
         return self._parse_response(parser, contenttype, body)
 
     def _parse_response(self, parser, contenttype, body):
-        temp_body = body.decode('utf-8')
-        if '<AmazonEnvelope' in temp_body:
-            return temp_body
+        if contenttype.casefold().find('utf-8') >= 0:
+            temp_body = body.decode('utf-8')
+            if '<AmazonEnvelope' in temp_body:
+                return temp_body
         if not contenttype.startswith('text/xml'):
             return body
         handler = XmlHandler(parser, self)
